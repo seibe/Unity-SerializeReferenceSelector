@@ -1,0 +1,11 @@
+{
+  "name": "jp.seibe.unity.serialize-reference-selector",
+  "version": "0.1.0-pre",
+  "displayName": "SerializeReference Selector",
+  "unity": "2020.2",
+  "author": {
+    "name": "Seibe TAKAHASHI",
+    "email": "t@seibe.jp",
+    "url": "https://github.com/seibe/Unity-SerializeReferenceSelector"
+  }
+}
