@@ -13,7 +13,7 @@ namespace UnityEditor
 
         int m_CurrentTypeIndex;
         string[]? m_DisplayNameArray;
-        System.Type[]? m_InheritedTypes;
+        System.Type?[]? m_InheritedTypes;
         bool m_IsInitialized = false;
         string[]? m_TypeFullNameArray;
         #endregion
