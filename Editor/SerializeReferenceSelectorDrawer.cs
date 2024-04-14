@@ -75,7 +75,7 @@ namespace UnityEditor
         {
             m_InheritedTypes = System.AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => baseType.IsAssignableFrom(p) && p.IsClass && (Attr.IsIncludeMono || !k_MonoBehaviourType.IsAssignableFrom(p)))
+                .Where(p => baseType.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract && (Attr.IsIncludeMono || !k_MonoBehaviourType.IsAssignableFrom(p)))
                 .Prepend(null)
                 .ToArray();
 
