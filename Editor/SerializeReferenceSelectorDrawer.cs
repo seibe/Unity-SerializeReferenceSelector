@@ -13,7 +13,7 @@ namespace UnityEditor
 
         int m_CurrentTypeIndex;
         string[]? m_DisplayNameArray;
-        System.Type[]? m_InheritedTypes;
+        System.Type?[]? m_InheritedTypes;
         bool m_IsInitialized = false;
         string[]? m_TypeFullNameArray;
         #endregion
@@ -57,16 +57,34 @@ namespace UnityEditor
 
             var propertyPaths = property.propertyPath.Split('.');
             var parentType = property.serializedObject.targetObject.GetType();
-            var fieldInfo = parentType.GetField(propertyPaths[0], k_BindingAttr);
-            var fieldType = fieldInfo.FieldType;
+            var currentType = parentType;
 
-            if (propertyPaths.Contains("Array"))
+            foreach (var path in propertyPaths)
             {
-                return fieldType.IsArray
-                    ? fieldType.GetElementType()
-                    : fieldType.GetGenericArguments()[0];
+                if (path == "Array")
+                {
+                    currentType = currentType.IsArray
+                        ? currentType.GetElementType()
+                        : currentType.GetGenericArguments()[0];
+                }
+                else
+                {
+                    var fieldInfo = currentType.GetField(path, k_BindingAttr);
+                    if (fieldInfo != null)
+                    {
+                        currentType = fieldInfo.FieldType;
+                    }
+                    else
+                    {
+                        var propertyInfo = currentType.GetProperty(path, k_BindingAttr);
+                        if (propertyInfo != null)
+                        {
+                            currentType = propertyInfo.PropertyType;
+                        }
+                    }
+                }
             }
-            return fieldType;
+            return currentType;
         }
 
         SerializeReferenceSelectorAttribute Attr => (SerializeReferenceSelectorAttribute)attribute;
@@ -75,7 +93,7 @@ namespace UnityEditor
         {
             m_InheritedTypes = System.AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => baseType.IsAssignableFrom(p) && p.IsClass && (Attr.IsIncludeMono || !k_MonoBehaviourType.IsAssignableFrom(p)))
+                .Where(p => baseType.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract && (Attr.IsIncludeMono || !k_MonoBehaviourType.IsAssignableFrom(p)))
                 .Prepend(null)
                 .ToArray();
 
