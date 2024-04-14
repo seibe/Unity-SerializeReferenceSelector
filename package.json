@@ -1,6 +1,6 @@
 {
   "name": "jp.seibe.unity.serialize-reference-selector",
-  "version": "0.1.0-pre",
+  "version": "0.1.1",
   "displayName": "SerializeReference Selector",
   "unity": "2020.2",
   "author": {
